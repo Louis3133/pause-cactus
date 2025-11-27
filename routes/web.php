@@ -1,0 +1,37 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+use Laravel\WorkOS\Http\Middleware\ValidateSessionWithWorkOS;
+
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'posts' => \App\Models\Post::all()
+    ]);
+})->name('welcome');
+
+
+
+Route::middleware([
+    'auth',
+    ValidateSessionWithWorkOS::class,
+])->group(function () {
+    Route::get('dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+});
+
+Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWithWorkOS::class,])->controller(\App\Http\Controllers\PostController::class)->group(function () {
+    Route::get('/new', 'create')->name('create');
+    Route::post('/store', 'store')->name('store');
+    Route::get('/{post}/edit', 'edit')->name('edit');
+    Route::put('/{post}', 'update')->name('update');
+    Route::get('/{slug}-{id}', 'show')->where([
+        'id' => '[0-9]+',
+        'slug' => '[a-z0-9\-]+'
+        ])->name('show');
+});
+
+require __DIR__.'/settings.php';
+require __DIR__.'/auth.php';
