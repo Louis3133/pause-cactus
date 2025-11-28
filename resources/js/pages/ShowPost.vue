@@ -8,6 +8,7 @@ const props = defineProps<{
         description: string;
         slug: string;
         image?: string | null;
+        licence?: { id: number; name: string } | null;
     };
 }>();
 </script>
@@ -16,6 +17,7 @@ const props = defineProps<{
     <AppLayout>
         <h1>{{ props.post.title }}</h1>
         <p>{{ props.post.description }}</p>
+        <p>{{ props.post.licence.name }}</p>
     </AppLayout>
 </template>
 

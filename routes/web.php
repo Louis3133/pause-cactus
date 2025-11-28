@@ -6,11 +6,15 @@ use Inertia\Inertia;
 use Laravel\WorkOS\Http\Middleware\ValidateSessionWithWorkOS;
 
 Route::get('/', function () {
+    $posts = \App\Models\Post::with('licence')->get();
+    $posts->each(function($post) {
+        $post->image_url = $post->imageUrl();
+    });
+
     return Inertia::render('Welcome', [
-        'posts' => \App\Models\Post::all()
+        'posts' => $posts
     ]);
 })->name('welcome');
-
 
 
 Route::middleware([
@@ -23,6 +27,7 @@ Route::middleware([
 });
 
 Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWithWorkOS::class,])->controller(\App\Http\Controllers\PostController::class)->group(function () {
+    route::get('/', 'index')->name('index');
     Route::get('/new', 'create')->name('create');
     Route::post('/store', 'store')->name('store');
     Route::get('/{post}/edit', 'edit')->name('edit');

@@ -33,6 +33,8 @@ const props = withDefaults(
                 <p>{{ post.description }}</p>
                 <p>{{ post.slug }}</p>
                 <p>{{ post.id}}</p>
+                <p>{{ post.licence?.name}}</p>
+                <div v-if="post.image_url"><img v-if="post.image_url" :src="post.image_url" :alt="post.title"></div>
                 <a :href="posts.show.url({ slug: post.slug, id: post.id })">Lire la suite</a>
             </li>
         </ul>

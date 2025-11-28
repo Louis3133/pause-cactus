@@ -26,7 +26,8 @@ class CreatePostRequest extends FormRequest
             'title' => ['required', 'string', 'min:8'],
             'slug' => ['required' , 'min:8', 'regex:/^[0-9a-z\-]+$/', Rule::unique('posts')->ignore($this->route('post'))],
             'description' => ['required'],
-            'image' => ['nullable', 'image'],
+            'licence_id' => ['required', 'exists:licences,id'],
+            'image' => ['nullable', 'image', 'max:2048'],
         ];
     }
 
