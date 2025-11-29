@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
+import axios from 'axios';
+import { ref } from 'vue';
 
 interface Licence {
     id: number;
@@ -20,19 +22,54 @@ interface FormData {
     description: string;
     licence_id: string | number;
     image: File | null;
+    tags: number[];
+    categories: number[];
 }
 
 const props = defineProps<{
     post: Post,
     licences: Licence[],
+    tags: Array<{ id: number; name: string }>;
+    selectedTags: number[];
+    categories: Array<{ id: number; name: string }>;
+    selectedCategories: number[];
 }>();
+
+const newTagName = ref('');
+
+const availableTags = ref([...props.tags]);
 
 const form = useForm<FormData>({
     title: props.post.title,
     description: props.post.description,
     licence_id: props.post.licence_id ?? '',
-    image: null, // Ajoute cette ligne
+    tags: props.selectedTags || [],
+    categories: props.selectedCategories || [],
+    image: null,
 });
+
+const createTag = async () => {
+    if (!newTagName.value.trim()) {
+        alert('Veuillez entrer un nom de tag');
+        return;
+    }
+
+    try {
+        const response = await axios.post('/tags/store', {
+            name: newTagName.value
+        });
+
+        const newTag = response.data;
+
+        availableTags.value.push(newTag);
+        form.tags.push(newTag.id);
+        newTagName.value = '';
+
+    } catch (error) {
+        alert('Erreur lors de la création du tag');
+        console.error(error);
+    }
+};
 
 function submit() {
     form.transform((data) => ({
@@ -85,6 +122,35 @@ function submit() {
                 <div v-if="form.errors.licence_id" class="text-red-600 text-sm">
                     {{ form.errors.licence_id }}
                 </div>
+            </div>
+
+            <div class="form-group mb-3">
+                <select multiple v-model="form.categories" class="form-control">
+                    <option v-for="category in props.categories" :key="category.id" :value="category.id">
+                        {{ category.name }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <select multiple v-model="form.tags" class="form-control">
+                    <option v-for="tag in availableTags" :key="tag.id" :value="tag.id">
+                        {{ tag.name }}
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group mb-3">
+                <label>Nouveau tag :</label>
+                <input
+                    type="text"
+                    v-model="newTagName"
+                    placeholder="Créer un nouveau tag"
+                    class="form-control"
+                >
+                <button type="button" @click="createTag" class="btn btn-secondary">
+                    Ajouter ce tag
+                </button>
             </div>
 
             <div>

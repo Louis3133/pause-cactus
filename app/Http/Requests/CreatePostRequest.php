@@ -28,6 +28,10 @@ class CreatePostRequest extends FormRequest
             'description' => ['required'],
             'licence_id' => ['required', 'exists:licences,id'],
             'image' => ['nullable', 'image', 'max:2048'],
+            'tags' => ['nullable', 'array'],
+            'tags.*' => ['exists:tags,id'],
+            'categories' => ['nullable', 'array'],
+            'categories.*' => ['exists:categories,id'],
         ];
     }
 

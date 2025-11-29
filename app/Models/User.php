@@ -24,6 +24,16 @@ class User extends Authenticatable
         'avatar',
     ];
 
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function favoritePosts()
+    {
+        return $this->belongsToMany(Post::class);
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *

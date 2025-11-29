@@ -32,10 +32,16 @@ Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWith
     Route::post('/store', 'store')->name('store');
     Route::get('/{post}/edit', 'edit')->name('edit');
     Route::put('/{post}', 'update')->name('update');
+    Route::delete('/{post}', 'destroy')->name('destroy');
+    Route::put('/{post}/favorite', 'favorite')->name('favorite');
     Route::get('/{slug}-{id}', 'show')->where([
         'id' => '[0-9]+',
         'slug' => '[a-z0-9\-]+'
         ])->name('show');
+});
+
+Route::prefix('/tags')->name('tags.')->middleware(['auth', ValidateSessionWithWorkOS::class,])->controller(\App\Http\Controllers\TagController::class)->group(function () {
+    Route::post('/store', 'store')->name('store');
 });
 
 require __DIR__.'/settings.php';
