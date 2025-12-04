@@ -22,6 +22,12 @@ return new class extends Migration
             $table->foreignIdFor(\App\Models\category::class)->constrained()->cascadeOnDelete();
             $table->primary(['category_id', 'post_id']);
         });
+
+        Schema::create('category_serie', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Serie::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\category::class)->constrained()->cascadeOnDelete();
+            $table->primary(['category_id', 'serie_id']);
+        });
     }
 
     /**
@@ -29,6 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('category_serie');
         Schema::dropIfExists('category_post');
         Schema::dropIfExists('categories');
     }

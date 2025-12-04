@@ -20,6 +20,8 @@ return new class extends Migration
             $table->longText('description');
             $table->string('slug')->unique();
             $table->string('image')->nullable();
+            $table->foreignId('serie_id')->nullable()->constrained('series')->onDelete('cascade');
+            $table->integer('episode_number')->nullable();
         });
 
         Schema::create('post_user', function (Blueprint $table) {

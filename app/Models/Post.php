@@ -16,7 +16,10 @@ class Post extends Model
         'description',
         'licence_id',
         'image',
-        'user_id'
+        'user_id',
+        'serie_id',
+        'episode_number',
+        'status',
     ];
 
     public function licence () {
@@ -42,5 +45,17 @@ class Post extends Model
 
     public function categories() {
         return $this->belongsToMany(category::class);
+    }
+
+    public function serie() {
+        return $this->belongsTo(Serie::class);
+    }
+
+    public function scopePublished($query) {
+        return $query->where('status', 'published');
+    }
+
+    public function scopePending($query) {
+        return $query->where('status', 'pending');
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Requests\CreatePostRequest;
 use App\Models\category;
 use App\Models\Licence;
 use App\Models\Post;
+use App\Models\Serie;
 use App\Models\Tag;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -23,6 +24,7 @@ class PostController extends Controller
             'licences' => Licence::select('id', 'name')->get(),
             'tags' => Tag::select('id', 'name')->get(),
             'categories' => category::select('id', 'name')->get(),
+            'series' => auth()->user()->series()->select('id', 'title')->get(),
         ]);
     }
 
@@ -32,8 +34,9 @@ class PostController extends Controller
         $data = $this->extractData($post, $request);
         $post = auth()->user()->posts()->create($data);
         $post->tags()->sync($request->validated('tags'));
+        $post->categories()->sync($request->validated('categories'));
 
-        return redirect()->route('welcome')->with('success', 'Post created');
+        return redirect()->route('posts.submit')->with('success', 'Post created');
     }
 
     public function edit(Post $post){
@@ -53,22 +56,6 @@ class PostController extends Controller
             'selectedCategories' => $post->categories->pluck('id'),
         ]);
     }
-
-
-    public function show(string $slug, string $id){
-        $post = Post::with(['licence', 'user'])->findOrFail($id);
-        if($post->slug !== $slug){
-            return to_route('show', ['slug' => $post->slug, 'id' => $post->id]);
-        }
-        return Inertia::render('ShowPost', [
-            'post' => $post,
-            'canEdit' => auth()->check() && auth()->id() === $post->user_id,
-            'isFavorite' => auth()->check() && $post->favorites->contains(auth()->id()),
-            'editUrl' => route('posts.edit', ['post' => $post->id]),
-            'deleteUrl' => route('posts.destroy', ['post' => $post->id]),
-        ]);
-    }
-
 
     public function update(Post $post, CreatePostRequest $request)
     {
@@ -116,5 +103,67 @@ class PostController extends Controller
 
         return $user;
     }
+
+
+    public function submit()
+    {
+        return Inertia::render('Submision');
+    }
+
+
+    public function show(string $slug, string $id){
+        $post = Post::with(['licence', 'user'])->findOrFail($id);
+
+        if ($post->status !== 'published') {
+            if (auth()->id() !== $post->user_id) {
+                abort(404);
+            }
+        }
+
+        if($post->slug !== $slug){
+            return to_route('show', ['slug' => $post->slug, 'id' => $post->id]);
+        }
+
+        $postCategories = $post->categories()->pluck('id');
+
+        $postsRelated = collect();
+
+        if($postCategories->isNotEmpty()) {
+        $postsRelated = Post::with(['user', 'categories', 'favorites'])->whereHas('categories', function($query) use ($postCategories) {
+            $query->whereIn('categories.id', $postCategories);
+        })
+
+            ->where('id', '!=', $post->id)
+            ->limit(8)->get();
+        }
+
+        $postsRelated->each(function($relatedPost) {
+            $relatedPost->image_url = $relatedPost->imageUrl();
+            $relatedPost->is_favorited = auth()->check() && $relatedPost->favorites->contains(auth()->id());
+        });
+
+
+        return Inertia::render('ShowPost', [
+            'post' => $post,
+            'postsRelated' => $postsRelated,
+            'canEdit' => auth()->check() && auth()->id() === $post->user_id,
+            'isFavorite' => auth()->check() && $post->favorites->contains(auth()->id()),
+            'editUrl' => route('posts.edit', ['post' => $post->id]),
+            'deleteUrl' => route('posts.destroy', ['post' => $post->id]),
+            'imageUrl' => $post->imageUrl(),
+        ]);
+    }
+
+
+
+
+
+
+
+
+
+
+
+
 
 }

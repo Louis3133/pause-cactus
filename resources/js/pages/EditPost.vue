@@ -71,6 +71,32 @@ const createTag = async () => {
     }
 };
 
+const toggleCategory = (id: number) => {
+    const current = form.categories.slice();
+    const index = current.indexOf(id);
+    if (index >= 0) {
+        current.splice(index, 1);
+    } else {
+        current.push(id);
+    }
+    form.categories = current;
+};
+
+const isCategorySelected = (id: number) => form.categories.includes(id);
+
+const toggleTag = (id: number) => {
+    const current = form.tags.slice();
+    const index = current.indexOf(id);
+    if (index >= 0) {
+        current.splice(index, 1);
+    } else {
+        current.push(id);
+    }
+    form.tags = current;
+};
+
+const isTagSelected = (id: number) => form.tags.includes(id);
+
 function submit() {
     form.transform((data) => ({
         ...data,
@@ -84,10 +110,15 @@ function submit() {
 
 <template>
     <AppLayout>
+        <section class="form-section">
         <h1>Modifier un article</h1>
+            <div class="separator"></div>
 
-        <form @submit.prevent="submit" enctype="multipart/form-data">
-            <div class="form-group mb-3">
+        <form class="form-content" @submit.prevent="submit" enctype="multipart/form-data">
+
+
+            <div class="form-label-input">
+                <label>Titre de l'article</label>
                 <input class="form-control"
                        type="text"
                        v-model="form.title"
@@ -98,7 +129,9 @@ function submit() {
                 </div>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="form-label-input">
+
+                <label>Description de l'article</label>
                 <textarea class="form-control"
                           v-model="form.description"
                           placeholder="Description"
@@ -108,7 +141,9 @@ function submit() {
                 </div>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="form-label-input">
+
+                <label>Licence</label>
                 <select v-model="form.licence_id" class="form-control">
                     <option value="">Choisir une licence</option>
                     <option
@@ -124,23 +159,36 @@ function submit() {
                 </div>
             </div>
 
-            <div class="form-group mb-3">
-                <select multiple v-model="form.categories" class="form-control">
-                    <option v-for="category in props.categories" :key="category.id" :value="category.id">
+            <div class="form-label-input">
+                <label>Catégories</label>
+                <div class="select">
+                    <div
+                        v-for="category in props.categories"
+                        :key="category.id"
+                        :class="['select__item', { 'select__item--selected': isCategorySelected(category.id) }]"
+                        @click="toggleCategory(category.id)"
+                    >
                         {{ category.name }}
-                    </option>
-                </select>
+                    </div>
+                </div>
+
             </div>
 
-            <div class="form-group mb-3">
-                <select multiple v-model="form.tags" class="form-control">
-                    <option v-for="tag in availableTags" :key="tag.id" :value="tag.id">
+            <div class="form-label-input">
+                <label>Tags</label>
+                <div class="select">
+                    <div
+                        v-for="tag in availableTags"
+                        :key="tag.id"
+                        :class="['select__item', { 'select__item--selected': isTagSelected(tag.id) }]"
+                        @click="toggleTag(tag.id)"
+                    >
                         {{ tag.name }}
-                    </option>
-                </select>
+                    </div>
+                </div>
             </div>
 
-            <div class="form-group mb-3">
+            <div class="form-label-input">
                 <label>Nouveau tag :</label>
                 <input
                     type="text"
@@ -162,14 +210,119 @@ function submit() {
                 >
             </div>
 
+            <div class="buttons-form">
+                <a class="btn-custom btn-small btn-pink">
+                    Annuler
+                </a>
+                <button class="btn-custom btn-small btn-purple" type="submit" :disabled="form.processing">
+                    Enregistrer
+                </button>
 
-            <button class="btn btn-primary" type="submit" :disabled="form.processing">
-                Modifier
-            </button>
+            </div>
+
         </form>
+        </section>
     </AppLayout>
 </template>
 
 <style scoped lang="scss">
+
+.select {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.select__item {
+    display: flex;
+    height: 24px;
+    padding: 16px 8px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 50px;
+    background: var(--gray-400);
+    transition: background .1s;
+    color: var(--gray-300);
+    font-family: var(--font-family-sans-serif);
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.select__item--selected {
+    background: #009578;
+    color: #ffffff;
+}
+
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+
+    .buttons-form {
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+        justify-content: center;
+
+        .btn-custom {
+            width: 140px;
+        }
+    }
+
+    label {
+        color: var(--black);
+        font-family: var(--font-family-sans-serif);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+
+    .form-content {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .form-label-input {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+
+
+h1 {
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 100%;
+    color: var(--black);
+
+    @media (min-width: 768px) {
+        font-size: 40px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: normal;
+    }
+
+}
+
+.separator {
+    display: none;
+    @media (min-width: 768px) {
+        display: block;
+        width: 100%;
+        height: 2px;
+        background-color: var(--purple-dark);
+        margin-top: -12px;
+    }
+}
+
 
 </style>

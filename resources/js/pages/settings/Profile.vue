@@ -36,10 +36,6 @@ const user = page.props.auth.user;
 
         <SettingsLayout>
             <div class="flex flex-col space-y-6">
-                <HeadingSmall
-                    title="Profile information"
-                    description="Update your name and email address"
-                />
 
                 <Form
                     v-bind="ProfileController.update.form()"
@@ -50,7 +46,6 @@ const user = page.props.auth.user;
                         <Label for="name">Name</Label>
                         <Input
                             id="name"
-                            class="mt-1 block w-full"
                             name="name"
                             :default-value="user.name"
                             required
@@ -65,7 +60,6 @@ const user = page.props.auth.user;
                         <Input
                             id="email"
                             type="email"
-                            class="mt-1 block w-full"
                             name="email"
                             :default-value="user.email"
                             required

@@ -1,0 +1,43 @@
+@import "bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rammetto+One&display=swap');
+
+:root{
+    --font-family-headings : "Rammetto One";
+    --font-family-sans-serif : "Jost";
+}
+
+h1 {
+    margin-bottom: unset;
+    font-family: var(--font-family-headings);
+    font-size: 32px;
+    font-weight: 400;
+}
+
+h2 {
+    margin-bottom: unset;
+    font-family: var(--font-family-headings);
+    font-size: 16px;
+    font-weight: 400;
+}
+
+h3 {
+    margin-bottom: unset;
+    font-family: var(--font-family-headings);
+    font-size: 14px;
+    font-weight: 400;
+}
+
+p {
+    margin-bottom: unset;
+    font-family: var(--font-family-sans-serif);
+    font-size: 14px;
+    font-weight: 400;
+}
+
+.subtitle {
+    margin-bottom: unset;
+    font-family: var(--font-family-sans-serif);
+    font-size: 12px;
+    font-weight: 500;
+}

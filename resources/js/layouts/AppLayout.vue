@@ -27,8 +27,16 @@ withDefaults(defineProps<Props>(), {
 .main-container {
     display: flex;
     flex-direction: column;
-    width: 90%;
-    margin-inline: auto;
+    padding: 16px;
+    padding-top: 38px;
+    padding-bottom: 64px;
+    border-radius: 54px 54px 0px 0px;
+    margin-top: -54px;
+    background: white;
+
+    @media (min-width: 768px) {
+        padding: 32px 64px 64px 64px;
+    }
 }
 
 </style>

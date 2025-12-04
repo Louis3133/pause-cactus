@@ -17,24 +17,23 @@ import { Form } from '@inertiajs/vue3';
 
 <template>
     <div>
-        <HeadingSmall
-            title="Delete account"
-            description="Delete your account and all of its resources"
-        />
         <div
 
         >
-            <div>
-                <p>Warning</p>
+            <div class="delete-description">
+                <HeadingSmall
+                    title="Fermer votre compte et supprimer vos données"
+                />
                 <p>
-                    Please proceed with caution, this cannot be undone.
+                    Nous sommes tristes de te voir partir, mais nous respectons ce choix. Nous restons toujours à ta disposition en cas de besoin ou si tu veux nous rejoindre à nouveau !
                 </p>
-            </div>
+                <p>Ce n’est pas un adieu mais un “à bientôt” ?</p>
             <Dialog>
                 <DialogTrigger as-child>
-                    <Button variant="destructive" data-test="delete-user-button"
-                        >Delete account</Button
+                    <Button class="btn-custom btn-small btn-pink" variant="destructive" data-test="delete-user-button"
+                        >Fermer mon compte</Button
                     >
+                    <p class="text-mini">La suppression des données est immédiate et non réversible, en cliquant sur ce bouton tu consens à perdre toutes les données associées à ton compte et tu ne pourras plus t’y connecter.</p>
                 </DialogTrigger>
                 <DialogContent>
                     <Form
@@ -86,6 +85,37 @@ import { Form } from '@inertiajs/vue3';
                     </Form>
                 </DialogContent>
             </Dialog>
+            </div>
         </div>
     </div>
 </template>
+
+<style scoped lang="scss">
+@use "../../scss/fluid.scss" as *;
+
+.delete-description {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+
+    p {
+        color: #000;
+        font-family: var(--font-family-sans-serif);
+        font-size: 14px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+
+    .text-mini {
+        color: var(--tertiary-green);
+        font-family: var(--font-family-sans-serif);
+        font-size: 12px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+    }
+}
+
+
+</style>

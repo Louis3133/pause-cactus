@@ -1,0 +1,135 @@
+.btn-icon {
+    display: flex;
+    padding: 16px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 100px;
+    background: var(--secondary-purple);
+    width: 56px;
+    height: 56px;
+}
+
+.btn-small {
+    padding: 12px 20px;
+    font-size: 16px;
+    gap: 8px;
+    height: 47px;
+
+    img {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.btn-medium {
+    padding: 16px 24px;
+    font-size: 18px;
+    gap: 12px;
+    height: 58px;
+
+    img {
+        width: 24px;
+        height: 24px;
+    }
+
+    &.avatar-btn img {
+        width: 37px;
+        height: 37px;
+        border-radius: 100px;
+    }
+}
+
+.btn-large {
+    padding: 20px 32px;
+    font-size: 24px;
+    gap: 16px;
+    height: 75px;
+
+    img {
+        width: 32px;
+        height: 32px;
+    }
+}
+
+.btn-custom {
+    display: flex;
+    flex-direction: row;
+    width: fit-content;
+    text-decoration: none;
+    border-radius: 100px;
+    font-family: var(--font-family-sans-serif);
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+    transition: .3s ease;
+    justify-content: center;
+    align-items: center;
+
+    &:disabled {
+        background-color: var(--gray-400);
+        color: var(--gray-200);
+        border: none;
+
+        &:hover {
+            background-color: var(--gray-400);
+            color: var(--gray-200);
+            border: none;
+        }
+    }
+
+}
+
+.btn-purple {
+    background-color: var(--purple-dark);
+    color: white;
+    border: 1px solid var(--purple-dark);
+
+    &:hover {
+        background-color: transparent;
+        border: 1px solid var(--purple-dark);
+        color: var(--purple-dark);
+    }
+
+    &:active {
+        background-color: var(--secondary-purple);
+        border: 1px solid var(--purple-dark);
+        color: var(--purple-dark);
+    }
+}
+
+.btn-pink {
+    background-color: var(--tertiary-purple-dark);
+    color: white;
+    border: 1px solid var(--tertiary-purple-dark);
+
+    &:hover {
+        background-color: transparent;
+        border: 1px solid var(--tertiary-purple-dark);
+        color: var(--tertiary-purple-dark);
+    }
+
+    &:active {
+        background-color: var(--secondary-pink);
+        border: 1px solid var(--tertiary-purple-dark);
+        color: var(--tertiary-purple-dark);
+    }
+}
+
+.btn-purple-secondary {
+    background-color: var(--secondary-purple);
+    color: var(--purple-dark);
+    border: 1px solid var(--secondary-purple);
+
+    &:hover {
+        background-color: var(--secondary-purple);
+        border: 1px solid var(--purple-dark);
+        color: var(--tertiary-purple);
+    }
+
+    &:active {
+        background-color: var(--tertiary-purple);
+        border: 1px solid var(--tertiary-purple);
+        color: var(--purple-dark);
+    }
+}

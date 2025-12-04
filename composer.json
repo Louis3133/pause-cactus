@@ -15,6 +15,7 @@
         "laravel/tinker": "^2.10.1",
         "laravel/wayfinder": "^0.1.9",
         "laravel/workos": "^0.1.0",
+        "tightenco/ziggy": "^2.6",
         "workos/workos-php-laravel": "^4.4"
     },
     "require-dev": {

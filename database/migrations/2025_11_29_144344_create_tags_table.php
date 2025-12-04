@@ -22,6 +22,12 @@ return new class extends Migration
            $table->foreignIdFor(\App\Models\Tag::class)->constrained()->cascadeOnDelete();
            $table->primary(['post_id', 'tag_id']);
         });
+
+        Schema::create('serie_tag', function (Blueprint $table) {
+            $table->foreignIdFor(\App\Models\Serie::class)->constrained()->cascadeOnDelete();
+            $table->foreignIdFor(\App\Models\Tag::class)->constrained()->cascadeOnDelete();
+            $table->primary(['serie_id', 'tag_id']);
+        });
     }
 
     /**
@@ -29,6 +35,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('serie_tag');
         Schema::dropIfExists('post_tag');
         Schema::dropIfExists('tags');
     }
