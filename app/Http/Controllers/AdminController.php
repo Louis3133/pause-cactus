@@ -11,12 +11,42 @@ use Inertia\Inertia;
 
 class AdminController extends Controller
 {
+
     public function index() {
-        $posts = Post::pending()->with(['licence', 'user', 'favorites', 'categories'])->latest()->get();
+
+        $pendingPosts = Post::pending()->with(['user', 'categories'])->latest()->get();
+        $pendingPosts->transform(fn($p) => $p->setAttribute('image_url', $p->imageUrl()));
+
+        $publishedPosts = Post::where('status', 'published')
+            ->with(['user'])
+            ->latest()
+            ->get();
+
+        $publishedPosts->transform(fn($p) => $p->setAttribute('image_url', $p->imageUrl()));
+
+        $users = \App\Models\User::latest()->get();
 
         return Inertia::render('AdminPanel', [
-            'posts' => $posts,
+            'pendingPosts' => $pendingPosts,
+            'publishedPosts' => $publishedPosts,
+            'users' => $users,
         ]);
+    }
+
+    public function destroyPost(Post $post)
+    {
+        $post->delete();
+        return redirect()->back()->with('success', 'Article supprimé.');
+    }
+
+    public function destroyUser(\App\Models\User $user)
+    {
+        if (auth()->id() === $user->id) {
+            return redirect()->back()->with('error', 'Vous ne pouvez pas supprimer votre propre compte.');
+        }
+
+        $user->delete();
+        return redirect()->back()->with('success', 'Utilisateur banni/supprimé.');
     }
 
     public function approve(Post $post)

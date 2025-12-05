@@ -33,7 +33,9 @@ import { Link } from '@inertiajs/vue3';
                     <Link :href="edit()">
                         Paramètres
                     </Link>
-                    <a href="">Mentions légales</a>
+                    <Link href="/mentions-legales">
+                        Mentions légales
+                    </Link>
                 </div>
 
             </div>

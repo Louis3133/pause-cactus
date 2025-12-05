@@ -18,7 +18,15 @@ class UserController extends Controller
             return to_route('author.show', ['slug' => $expectedSlug, 'id' => $user->id]);
         }
 
-        $posts = Post::where('user_id', $user->id)->with(['favorites', 'categories', 'licence', 'user'])->get();
+        $posts = Post::published()->where('user_id', $user->id)->with(['favorites', 'categories', 'licence', 'user'])->get();
+
+        $postsFavorites = $user->favoritePosts()
+            ->with(['categories', 'licence', 'user'])
+            ->get();
+
+        $postsFavorites->each(function($post) {
+            $post->image_url = $post->imageUrl();
+        });
 
         $posts->each(function($post) {
             $post->image_url = $post->imageUrl();
@@ -28,6 +36,7 @@ class UserController extends Controller
         return Inertia::render('ShowUser', [
             'user' => $user,
             'posts' => $posts,
+            'postsFavorites' => $postsFavorites,
             'canEdit' => auth()->check() && auth()->id() === $user->id,
         ]);
     }

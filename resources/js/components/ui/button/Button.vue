@@ -20,7 +20,8 @@ const props = withDefaults(defineProps<Props>(), {
     data-slot="button"
     :as="as"
     :as-child="asChild"
-    :class="cn(buttonVariants({ variant, size }), props.class)"
+    class="btn-custom btn-small btn-purple"
+    style="margin-inline: auto"
   >
     <slot />
   </Primitive>

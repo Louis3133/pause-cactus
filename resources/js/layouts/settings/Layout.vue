@@ -23,7 +23,7 @@ const sidebarNavItems: NavItem[] = [
 
 <template>
     <div>
-        <Heading title="Paramètres" />
+        <h1>Paramètres</h1>
             <div>
                 <section>
                     <slot />
@@ -32,3 +32,17 @@ const sidebarNavItems: NavItem[] = [
 
     </div>
 </template>
+
+<style scoped lang="scss">
+@use "../../../scss/fluid.scss" as *;
+
+h1 {
+    color: var(--purple-dark);
+    font-size: #{fluid(24px, 40px, 320px, 1500px)};
+    font-style: normal;
+    font-weight: 400;
+    line-height: 140%;
+    padding: 24px;
+    text-align: center;
+}
+</style>

@@ -100,7 +100,7 @@ const isTagSelected = (id: number) => form.tags.includes(id);
 function submit() {
     form.transform((data) => ({
         ...data,
-        _method: 'PUT', // Spoofing de méthode
+        _method: 'PUT',
     })).post(`/posts/${props.post.id}`, {
         preserveScroll: true,
         forceFormData: true,
@@ -174,6 +174,7 @@ function submit() {
 
             </div>
 
+            <div style="display: none">
             <div class="form-label-input">
                 <label>Tags</label>
                 <div class="select">
@@ -199,6 +200,7 @@ function submit() {
                 <button type="button" @click="createTag" class="btn btn-secondary">
                     Ajouter ce tag
                 </button>
+            </div>
             </div>
 
             <div>

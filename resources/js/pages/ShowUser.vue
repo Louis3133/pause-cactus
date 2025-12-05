@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import AppLayout from '@/layouts/AppLayout.vue';
 import Thumbnail from '@/components/Thumbnail.vue';
-import { Head } from '@inertiajs/vue3';
+import { Head, Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/composables/useInitials';
+import { edit } from '@/routes/profile';
 
 const props = defineProps<{
     user: {
@@ -24,11 +25,23 @@ const props = defineProps<{
         licence?: { id: number; name: string } | null;
     }>;
 
+    postsFavorites: Array<{
+        id: number;
+        title: string;
+        description: string;
+        slug: string;
+        image_url?: string | null;
+        is_favorited: boolean;
+        user?: { id: number; name: string } | null;
+        categories: Array<{ id: number; name: string }>;
+        licence?: { id: number; name: string } | null;
+    }>;
+
     canEdit: boolean;
 }>();
 
 defineOptions({
-    layout: AppLayout
+    layout: AppLayout,
 });
 
 const { getInitials } = useInitials();
@@ -36,31 +49,32 @@ const { getInitials } = useInitials();
 const showAvatar = computed(
     () => props.user.avatar && props.user.avatar !== '',
 );
-
 </script>
 
 <template>
     <Head :title="`Articles de ${props.user.name}`" />
 
     <div class="user-profile-container">
-
         <div class="profile-header">
             <div class="header-top">
-            <Avatar class="avatar-image">
-                <AvatarImage v-if="showAvatar" :src="user.avatar!" :alt="user.name" />
-                <AvatarFallback>
-                    {{ getInitials(user.name) }}
-                </AvatarFallback>
-            </Avatar>
-            <div class="infos">
-                <h1>{{ props.user.name }}</h1>
-                <p class="stats">{{ props.posts.length }} article(s) publié(s)</p>
-            </div>
+                <Avatar class="avatar-image">
+                    <AvatarImage
+                        v-if="showAvatar"
+                        :src="user.avatar!"
+                        :alt="user.name"
+                    />
+                    <AvatarFallback>
+                        {{ getInitials(user.name) }}
+                    </AvatarFallback>
+                </Avatar>
+                <div class="infos">
+                    <h1>{{ props.user.name }}</h1>
+                </div>
             </div>
 
-        <button class="btn-medium btn-pink btn-custom" v-if="canEdit">
-            Supprimer
-        </button>
+            <Link class="btn-medium btn-pink btn-custom" v-if="canEdit" :href="edit()" prefetch as="button">
+                Modifier
+            </Link>
         </div>
 
         <div class="separator"></div>
@@ -74,9 +88,6 @@ const showAvatar = computed(
                     :id="post.id"
                     :title="post.title"
                     :image-url="post.image_url"
-                    :is-favorited="post.is_favorited"
-                    :user-name="props.user.name"
-                    :user="props.user"
                     :categories="post.categories"
                 />
             </article>
@@ -86,11 +97,36 @@ const showAvatar = computed(
             <p>Cet utilisateur n'a pas encore publié de contenu.</p>
         </div>
 
+        <div v-if="canEdit && props.postsFavorites.length > 0">
+
+        <h2>Favoris</h2>
+
+        <div v-if="props.postsFavorites.length > 0" class="posts-grid">
+            <article v-for="postsFavorite in props.postsFavorites" :key="postsFavorite.id">
+                <Thumbnail
+                    :slug="postsFavorite.slug"
+                    :id="postsFavorite.id"
+                    :title="postsFavorite.title"
+                    :image-url="postsFavorite.image_url"
+                    :is-favorited="postsFavorite.is_favorited"
+                    :categories="postsFavorite.categories"
+                />
+            </article>
+        </div>
+
+        </div>
+
+
+
     </div>
 </template>
 
 <style scoped lang="scss">
-@use "../../scss/fluid.scss" as *;
+@use '../../scss/fluid.scss' as *;
+
+.user-link {
+    display: none;
+}
 
 .user-profile-container {
     display: flex;
@@ -114,7 +150,7 @@ const showAvatar = computed(
     .avatar-circle {
         width: 80px;
         height: 80px;
-        background-color: var(--purple-dark, #694EC8);
+        background-color: var(--purple-dark, #694ec8);
         color: white;
         border-radius: 50%;
         display: flex;
@@ -161,13 +197,13 @@ const showAvatar = computed(
 .empty-state {
     text-align: center;
     padding: 60px;
-    color: #6B7280;
+    color: #6b7280;
     font-style: italic;
     font-family: var(--font-family-sans-serif, sans-serif);
 }
 
 h1 {
-    color: #0F0F0F;
+    color: #0f0f0f;
     font-family: var(--font-family-sans-serif);
     font-size: #{fluid(16px, 40px, 320px, 998px)};
     font-style: normal;
@@ -179,15 +215,6 @@ h1 {
     }
 }
 
-.stats {
-    color: #0F0F0F;
-    font-family: var(--font-family-sans-serif);
-    font-size: #{fluid(12px, 25px, 320px, 998px)};
-    font-style: normal;
-    font-weight: 500;
-    line-height: normal;
-}
-
 h2 {
     color: var(--purple-dark);
     font-size: #{fluid(16px, 40px, 320px, 998px)};
@@ -195,5 +222,4 @@ h2 {
     font-weight: 400;
     line-height: normal;
 }
-
 </style>

@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useForm } from '@inertiajs/vue3';
 import AppLayout from '@/layouts/AppLayout.vue';
 import { ref } from 'vue';
+import { Link } from '@inertiajs/vue3';
 
 const props = defineProps<{
     licences: Array<{ id: number; name: string }>
@@ -11,24 +12,30 @@ const props = defineProps<{
     series: Array<{ id: number; title: string }>
 }>();
 
-const previewUrl = ref<string | null>(null);
-const fileName = ref<string | null>(null);
-const fileSize = ref<string | null>(null);
+const previewUrlCover = ref<string | null>(null);
+const fileNameCover = ref<string | null>(null);
+const fileSizeCover = ref<string | null>(null);
 
 const handleFile = (event: Event) => {
     const file = (event.target as HTMLInputElement).files?.[0];
-
     if (!file) return;
-
-    // Stockage dans ton form Inertia
     form.image = file;
+    previewUrlCover.value = URL.createObjectURL(file);
+    fileNameCover.value = file.name;
+    fileSizeCover.value = (file.size / 1024).toFixed(1) + " KB";
+};
 
-    // Aperçu
-    previewUrl.value = URL.createObjectURL(file);
 
-    // Infos
-    fileName.value = file.name;
-    fileSize.value = (file.size / 1024).toFixed(1) + " KB";
+const previewUrlWebtoon = ref<string | null>(null);
+const fileNameWebtoon = ref<string | null>(null);
+const fileSizeWebtoon = ref<string | null>(null);
+const handleFileWebtoon = (event: Event) => {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (!file) return;
+    form.webtoon = file;
+    previewUrlWebtoon.value = URL.createObjectURL(file);
+    fileNameWebtoon.value = file.name;
+    fileSizeWebtoon.value = (file.size / 1024).toFixed(1) + " KB";
 };
 
 
@@ -51,6 +58,7 @@ const form = useForm({
     categories: [] as number[],
     serie_id: null as number | null,
     image: null as File | null,
+    webtoon: null as File | null,
 });
 
 const availableTags = ref([...props.tags]);
@@ -142,7 +150,7 @@ const isTagSelected = (id: number) => form.tags.includes(id);
         <form class="form-content" @submit.prevent="form.post('/posts/store', { forceFormData: true })">
 
             <div class="form-label-input">
-                <label>Titre de l'article</label>
+                <label>Titre de l'article*</label>
                 <input class="form-control"
                     type="text"
                     v-model="form.title"
@@ -155,7 +163,7 @@ const isTagSelected = (id: number) => form.tags.includes(id);
 
             <div class="form-label-input">
 
-            <label>Description de l'article</label>
+            <label>Description de l'article*</label>
                 <textarea class="form-control" v-model="form.description" placeholder="Description"></textarea>
                 <div v-if="form.errors.description" class="text-red-600 text-sm">
                     {{ form.errors.description }}
@@ -164,7 +172,7 @@ const isTagSelected = (id: number) => form.tags.includes(id);
 
             <div class="form-label-input">
 
-            <label>Licence</label>
+            <label>Licence*</label>
             <select v-model="form.licence_id" class="form-control">
                 <option value="">Choisir une licence</option>
                 <option
@@ -176,6 +184,8 @@ const isTagSelected = (id: number) => form.tags.includes(id);
                 </option>
             </select>
 
+
+
             <div  v-if="form.errors.licence_id" class="text-red-600 text-sm">
                 {{ form.errors.licence_id }}
             </div>
@@ -183,7 +193,67 @@ const isTagSelected = (id: number) => form.tags.includes(id);
             </div>
 
             <div class="form-label-input">
-                <label>Catégories</label>
+                <label>Couverture*</label>
+                <div class="file-input-container">
+            <div class="file-input">
+                <button class="btn-custom btn-small btn-purple">Ajouter une image</button>
+                <input
+                    class="form-control"
+                    ref="fileInput"
+                    type="file"
+                    @change="handleFile"
+                    accept="image/*"
+                />
+                <div v-if="form.errors.image" class="text-red-600 text-sm">
+                    {{ form.errors.image }}
+                </div>
+
+                <div v-if="previewUrlCover" class="image-preview">
+                    <img :src="previewUrlCover" alt="Preview" class="preview-img">
+                </div>
+            </div>
+
+            <div class="file-info">
+                <p><strong>Nom :</strong> {{ fileNameCover }}</p>
+                <p><strong>Taille :</strong> {{ fileSizeCover }}</p>
+            </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-label-input">
+                <label>Webtoon*</label>
+                <div class="file-input-container">
+                    <div class="file-input">
+                        <button class="btn-custom btn-small btn-purple">Ajouter une planche</button>
+                        <input
+                            class="form-control"
+                            ref="fileInput"
+                            type="file"
+                            @change="handleFileWebtoon"
+                            accept="image/*"
+                        />
+                        <div v-if="form.errors.webtoon" class="text-red-600 text-sm">
+                            {{ form.errors.webtoon }}
+                        </div>
+
+                        <div v-if="previewUrlWebtoon" class="image-preview">
+                            <img :src="previewUrlWebtoon" alt="Preview" class="preview-img">
+                        </div>
+                    </div>
+
+                    <div class="file-info">
+                        <p><strong>Nom :</strong> {{ fileNameWebtoon }}</p>
+                        <p><strong>Taille :</strong> {{ fileSizeWebtoon }}</p>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-label-input">
+                <label>Catégories*</label>
                 <div class="select">
                     <div
                         v-for="category in props.categories"
@@ -197,7 +267,7 @@ const isTagSelected = (id: number) => form.tags.includes(id);
 
             </div>
 
-            
+<div style="display: none">
 
             <div class="form-label-input">
                 <label>Tags</label>
@@ -225,10 +295,11 @@ const isTagSelected = (id: number) => form.tags.includes(id);
                     Ajouter ce tag
                 </button>
             </div>
+</div>
 
             <div class="form-label-input">
                 <label>Créer une nouvelle série</label>
-                <input type="checkbox" v-model="createNewSerie">
+                <input class="form-checkbox" type="checkbox" v-model="createNewSerie">
             </div>
 
             <div v-if="createNewSerie">
@@ -252,42 +323,15 @@ const isTagSelected = (id: number) => form.tags.includes(id);
                 </select>
             </div>
 
-        <div class="file-input">
-            <button class="btn-custom btn-small btn-purple">Ajouter une image</button>
-            <input
-                class="form-control"
-                ref="fileInput"
-                type="file"
-                @change="handleFile"
-                accept="image/*"
-            />
-            <div v-if="form.errors.image" class="text-red-600 text-sm">
-                {{ form.errors.image }}
-            </div>
-
-            <div v-if="previewUrl" class="image-preview">
-                <img :src="previewUrl" alt="Preview" class="preview-img">
-            </div>
-        </div>
-
-            <div class="file-info">
-                <p><strong>Nom :</strong> {{ fileName }}</p>
-                <p><strong>Taille :</strong> {{ fileSize }}</p>
-            </div>
-
-
-            <div v-if="Object.keys(form.errors).length" class="alert alert-danger">
-                <pre>{{ form.errors }}</pre>
-            </div>
 
         <div class="buttons-form">
 
             <button class="btn-custom btn-small btn-purple" type="submit" :disabled="form.processing">
                 Publier
             </button>
-            <a href="/" class="btn-custom btn-small btn-pink">
+            <Link href="/" class="btn-custom btn-small btn-pink">
                 Annuler
-            </a>
+            </Link>
 
         </div>
 
@@ -395,5 +439,14 @@ h1 {
     }
 }
 
+.file-input-container {
+    display: flex;
+    flex-direction: column;
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        gap: 24px;
+    }
+}
 
 </style>

@@ -21,9 +21,8 @@ import { Form } from '@inertiajs/vue3';
 
         >
             <div class="delete-description">
-                <HeadingSmall
-                    title="Fermer votre compte et supprimer vos données"
-                />
+
+                <h2>Fermer votre compte et supprimer vos données</h2>
                 <p>
                     Nous sommes tristes de te voir partir, mais nous respectons ce choix. Nous restons toujours à ta disposition en cas de besoin ou si tu veux nous rejoindre à nouveau !
                 </p>
@@ -93,6 +92,14 @@ import { Form } from '@inertiajs/vue3';
 <style scoped lang="scss">
 @use "../../scss/fluid.scss" as *;
 
+h2 {
+    color: var(--purple-dark);
+    font-size: #{fluid(14px, 30px, 320px, 1500px)};
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 .delete-description {
     display: flex;
     flex-direction: column;
@@ -101,19 +108,20 @@ import { Form } from '@inertiajs/vue3';
     p {
         color: #000;
         font-family: var(--font-family-sans-serif);
-        font-size: 14px;
+        font-size: #{fluid(14px, 16px, 320px, 1500px)};
         font-style: normal;
         font-weight: 500;
         line-height: normal;
     }
 
     .text-mini {
-        color: var(--tertiary-green);
+        color: #5D5D5D;
         font-family: var(--font-family-sans-serif);
         font-size: 12px;
         font-style: normal;
         font-weight: 500;
         line-height: normal;
+        text-align: center;
     }
 }
 

@@ -41,7 +41,7 @@ const slugify = (text: string) => {
     </Link>
 
     <div class="content">
-        <p class="author">par
+        <p v-if="props.user" class="author">par
             <Link
                 class="user-link"
                 v-if="props.user"
@@ -79,7 +79,7 @@ const slugify = (text: string) => {
         background: var(--secondary-green);
         color: var(--tertiary-green);
         font-family: var(--font-family-sans-serif);
-        font-size: #{fluid(12px, 18px, 320px, 1200px)};
+        font-size: #{fluid(12px, 14px, 320px, 1200px)};
         font-style: normal;
         font-weight: 500;
         line-height: normal;
@@ -130,8 +130,13 @@ const slugify = (text: string) => {
     .favorite-badge {
         position: absolute;
         top: 0;
-        right: 10px;
+        right: #{fluid(10px, 20px, 320px, 998px)};
         z-index: 8;
+
+        svg {
+            height: #{fluid(40px, 50px, 320px, 998px)};
+            width: #{fluid(30px, 40px, 320px, 998px)};
+        }
     }
 
     .title {
@@ -164,4 +169,5 @@ const slugify = (text: string) => {
     margin-top: 4px;
     margin-bottom: 40px;
 }
+
 </style>

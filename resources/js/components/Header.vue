@@ -211,8 +211,7 @@ const slugify = (text: string) => {
 .auth.btn-purple-secondary {
     @media (max-width: 768px) {
         background-color: var(--purple-dark);
-        color: white;
-        color: var(--white);
+        color: var(--purple-dark);
         font-family: var(--font-family-sans-serif);
         font-size: 14px;
         font-style: normal;
@@ -329,6 +328,14 @@ header {
         align-items: center;
         justify-content: unset;
 
+    }
+
+    .btn-custom {
+        color: var(--purple-dark);
+
+        &:hover {
+            color: var(--tertiary-purple);
+        }
     }
 
     a {

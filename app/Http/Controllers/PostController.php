@@ -83,15 +83,22 @@ class PostController extends Controller
     private function extractData(Post $post, CreatePostRequest $request){
         $data = $request->validated();
 
-        /** @var UploadedFile|null $image */
         $image = $request->validated('image');
-        if($image == null || $image->getError()){
-            return $data;
+        if($image && !$image->getError()){
+            if ($post->image) {
+                Storage::disk('public')->delete($post->image);
+            }
+            $data['image'] = $image->store('posts', 'public');
         }
-        if ($post->image) {
-            Storage::disk('public')->delete($post->image);
+
+        $webtoon = $request->validated('webtoon');
+        if($webtoon && !$webtoon->getError()){
+            if ($post->webtoon) {
+                Storage::disk('public')->delete($post->webtoon);
+            }
+            $data['webtoon'] = $webtoon->store('webtoons', 'public');
         }
-        $data['image'] = $image->store('posts', 'public');
+
         return $data;
     }
 
@@ -129,7 +136,7 @@ class PostController extends Controller
         $postsRelated = collect();
 
         if($postCategories->isNotEmpty()) {
-        $postsRelated = Post::with(['user', 'categories', 'favorites'])->whereHas('categories', function($query) use ($postCategories) {
+        $postsRelated = Post::published()->with(['user', 'categories', 'favorites'])->whereHas('categories', function($query) use ($postCategories) {
             $query->whereIn('categories.id', $postCategories);
         })
 
@@ -147,10 +154,35 @@ class PostController extends Controller
             'post' => $post,
             'postsRelated' => $postsRelated,
             'canEdit' => auth()->check() && auth()->id() === $post->user_id,
+            'hasWebtoon' => (bool) $post->webtoon,
             'isFavorite' => auth()->check() && $post->favorites->contains(auth()->id()),
             'editUrl' => route('posts.edit', ['post' => $post->id]),
+            'webtoonUrl' => route('posts.webtoon', ['slug' => $post->slug, 'id' => $post->id]),
             'deleteUrl' => route('posts.destroy', ['post' => $post->id]),
             'imageUrl' => $post->imageUrl(),
+        ]);
+    }
+
+    public function webtoon(string $slug, string $id) {
+        $post = Post::with(['licence', 'user'])->findOrFail($id);
+
+        if ($post->status !== 'published') {
+            if (auth()->id() !== $post->user_id) {
+                abort(404);
+            }
+        }
+
+        if($post->slug !== $slug){
+            return to_route('posts.webtoon', ['slug' => $post->slug, 'id' => $post->id]);
+        }
+
+        if (!$post->webtoon) {
+            abort(404, 'Aucune planche disponible');
+        }
+
+        return Inertia::render('ShowWebtoon', [
+            'post' => $post,
+            'webtoonUrl' => $post->webtoonUrl(),
         ]);
     }
 

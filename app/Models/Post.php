@@ -20,6 +20,7 @@ class Post extends Model
         'serie_id',
         'episode_number',
         'status',
+        'webtoon',
     ];
 
     public function licence () {
@@ -28,6 +29,10 @@ class Post extends Model
 
     public function imageUrl () {
         return Storage::url($this->image);
+    }
+
+    public function webtoonUrl() {
+        return Storage::url($this->webtoon);
     }
 
     public function user()

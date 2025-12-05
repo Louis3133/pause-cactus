@@ -27,11 +27,12 @@ class CreatePostRequest extends FormRequest
             'slug' => ['required' , 'min:8', 'regex:/^[0-9a-z\-]+$/', Rule::unique('posts')->ignore($this->route('post'))],
             'description' => ['required'],
             'licence_id' => ['required', 'exists:licences,id'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'image'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['exists:tags,id'],
             'categories' => ['nullable', 'array'],
             'categories.*' => ['exists:categories,id'],
+            'webtoon' => ['nullable', 'image'],
         ];
     }
 

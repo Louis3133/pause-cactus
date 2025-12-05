@@ -35,47 +35,51 @@ const user = page.props.auth.user;
         <Head title="Profile settings" />
 
         <SettingsLayout>
-            <div class="flex flex-col space-y-6">
-
+            <div class="info-account">
                 <Form
                     v-bind="ProfileController.update.form()"
-                    class="space-y-6"
                     v-slot="{ errors, processing, recentlySuccessful }"
                 >
-                    <div class="grid gap-2">
-                        <Label for="name">Name</Label>
-                        <Input
-                            id="name"
-                            name="name"
-                            :default-value="user.name"
-                            required
-                            autocomplete="name"
-                            placeholder="Full name"
-                        />
-                        <InputError class="mt-2" :message="errors.name" />
+                    <div class="form-duo">
+                        <div class="label-input">
+                            <Label for="name">Nom</Label>
+                            <Input
+                                id="name"
+                                name="name"
+                                :default-value="user.name"
+                                required
+                                autocomplete="name"
+                                placeholder="Full name"
+                            />
+                            <InputError :message="errors.name" />
+                        </div>
+
+                        <div class="label-input">
+                            <Label for="email">Adresse mail</Label>
+                            <Input
+                                id="email"
+                                type="email"
+                                name="email"
+                                :default-value="user.email"
+                                required
+                                autocomplete="username"
+                                placeholder="Email address"
+                                disabled
+                            />
+                            <InputError class="mt-2" :message="errors.email" />
+                        </div>
                     </div>
 
-                    <div class="grid gap-2">
-                        <Label for="email">Email address</Label>
-                        <Input
-                            id="email"
-                            type="email"
-                            name="email"
-                            :default-value="user.email"
-                            required
-                            autocomplete="username"
-                            placeholder="Email address"
-                            disabled
-                        />
-                        <InputError class="mt-2" :message="errors.email" />
-                    </div>
+                    <div>
 
-                    <div class="flex items-center gap-4">
+                        <div class="save-btn">
                         <Button
+                            class="save-button"
                             :disabled="processing"
                             data-test="update-profile-button"
-                            >Save</Button
+                            >Sauvegarder</Button
                         >
+                        </div>
 
                         <Transition
                             enter-active-class="transition ease-in-out"
@@ -83,12 +87,7 @@ const user = page.props.auth.user;
                             leave-active-class="transition ease-in-out"
                             leave-to-class="opacity-0"
                         >
-                            <p
-                                v-show="recentlySuccessful"
-                                class="text-sm text-neutral-600"
-                            >
-                                Saved.
-                            </p>
+                            <p v-show="recentlySuccessful">Saved.</p>
                         </Transition>
                     </div>
                 </Form>
@@ -98,3 +97,42 @@ const user = page.props.auth.user;
         </SettingsLayout>
     </AppLayout>
 </template>
+
+<style scoped lang="scss">
+@use '../../../scss/fluid.scss' as *;
+
+.label-input {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.info-account {
+    padding-bottom: #{fluid(32px, 64px, 320px, 1200px)};
+    border-bottom: 1px solid var(--purple-dark);
+    margin-bottom: #{fluid(32px, 64px, 320px, 1200px)};
+}
+
+.save-btn {
+    margin-inline: auto;
+    display: flex;
+    width: 100%;
+}
+
+.form-duo {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    width: 100%;
+    margin-bottom: 24px;
+
+    .label-input {
+        width: 100%;
+    }
+
+    @media (min-width: 768px) {
+        flex-direction: row;
+        gap: 32px;
+    }
+}
+</style>

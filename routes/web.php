@@ -52,6 +52,7 @@ Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWith
     Route::put('/{post}', 'update')->name('update');
     Route::delete('/{post}', 'destroy')->name('destroy');
     Route::put('/{post}/favorite', 'favorite')->name('favorite');
+    Route::get('/{slug}-{id}/webtoon', 'webtoon')->name('webtoon');
     Route::get('/{slug}-{id}', 'show')->where([
         'id' => '[0-9]+',
         'slug' => '[a-z0-9\-]+'
@@ -81,6 +82,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::get('/', [\App\Http\Controllers\AdminController::class, 'index'])->name('index');
     Route::put('/posts/{post}/approve', [\App\Http\Controllers\AdminController::class, 'approve'])->name('approve');
     Route::put('/posts/{post}/reject', [\App\Http\Controllers\AdminController::class, 'reject'])->name('reject');
+    Route::delete('/admin/post/{post}', [\App\Http\Controllers\AdminController::class, 'destroyPost'])->name('deletePost');
+    Route::delete('/admin/user/{user}', [\App\Http\Controllers\AdminController::class, 'destroyUser'])->name('deleteUser');
 
 });
 
@@ -88,6 +91,7 @@ Route::get('/concept', function (Request $request) { return Inertia::render('Con
 
 Route::get('/about', function (Request $request) { return Inertia::render('AboutUs');})->name('about');
 
+Route::get('/mentions-legales', function (Request $request) { return Inertia::render('MentionsLegales');})->name('legal');
 
 require __DIR__.'/settings.php';
 require __DIR__.'/auth.php';
