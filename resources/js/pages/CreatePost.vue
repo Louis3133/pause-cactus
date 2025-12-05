@@ -297,6 +297,8 @@ const isTagSelected = (id: number) => form.tags.includes(id);
             </div>
 </div>
 
+            <div style="display: none">
+
             <div class="form-label-input">
                 <label>Créer une nouvelle série</label>
                 <input class="form-checkbox" type="checkbox" v-model="createNewSerie">
@@ -323,6 +325,8 @@ const isTagSelected = (id: number) => form.tags.includes(id);
                 </select>
             </div>
 
+            </div>
+
 
         <div class="buttons-form">
 
@@ -334,6 +338,8 @@ const isTagSelected = (id: number) => form.tags.includes(id);
             </Link>
 
         </div>
+
+
 
 
     </form>

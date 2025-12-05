@@ -2,6 +2,7 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import Thumbnail from '@/components/Thumbnail.vue';
 import { Head, usePage } from '@inertiajs/vue3';
+import { Link } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useInitials } from '@/composables/useInitials';
@@ -38,6 +39,14 @@ const otherPosts = computed(() => {
 const showAvatar = computed(() => {
     return lastPost.value?.user?.avatar;
 });
+
+const filteredCategories = computed(() => {
+    const allowedNames = ['Politique', 'Art', 'Monde'];
+
+    return props.categories.filter(category =>
+        allowedNames.map(n => n.toLowerCase()).includes(category.name.toLowerCase())
+    );
+});
 </script>
 
 <template>
@@ -47,7 +56,7 @@ const showAvatar = computed(() => {
     </Head>
 
     <AppLayout>
-        <a :href="`/posts/${lastPost.slug}`" class="post-one" v-if="lastPost">
+        <Link :href="`/posts/${lastPost.slug}-${lastPost.id}`" class="post-one" v-if="lastPost">
             <img class="thumbnail-one" v-if="lastPost.image_url" :src="lastPost.image_url" :alt="lastPost.title">
             <div class="user-one">
                 <Avatar class="avatar-image">
@@ -80,7 +89,7 @@ const showAvatar = computed(() => {
                     />
                 </svg>
             </div>
-        </a>
+        </Link>
 
         <h1>L’info qui pik pik pik</h1>
 
@@ -94,7 +103,7 @@ const showAvatar = computed(() => {
                     Tout
                 </a>
             </li>
-            <li v-for="categoryitem in categories" :key="categoryitem.id">
+            <li v-for="categoryitem in filteredCategories" :key="categoryitem.id">
                 <a
                     class="categorie-item"
                     :href="`/?category=${categoryitem.id}`"

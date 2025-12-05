@@ -43,8 +43,12 @@ Route::middleware([
     })->name('dashboard');
 });
 
-Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWithWorkOS::class,])->controller(\App\Http\Controllers\PostController::class)->group(function () {
-    route::get('/', 'index')->name('index');
+Route::get('/posts/{slug}-{id}', [\App\Http\Controllers\PostController::class, 'show'])
+    ->where(['id' => '[0-9]+', 'slug' => '[a-z0-9\-]+'])
+    ->name('posts.show');
+
+Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWithWorkOS::class])->controller(\App\Http\Controllers\PostController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
     Route::get('/new', 'create')->name('create');
     Route::get('/submit', 'submit')->name('submit');
     Route::post('/store', 'store')->name('store');
@@ -53,10 +57,6 @@ Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWith
     Route::delete('/{post}', 'destroy')->name('destroy');
     Route::put('/{post}/favorite', 'favorite')->name('favorite');
     Route::get('/{slug}-{id}/webtoon', 'webtoon')->name('webtoon');
-    Route::get('/{slug}-{id}', 'show')->where([
-        'id' => '[0-9]+',
-        'slug' => '[a-z0-9\-]+'
-        ])->name('show');
 });
 
 Route::prefix('/author')->name('author.')->controller(\App\Http\Controllers\UserController::class)->group(function () {
@@ -84,7 +84,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     Route::put('/posts/{post}/reject', [\App\Http\Controllers\AdminController::class, 'reject'])->name('reject');
     Route::delete('/admin/post/{post}', [\App\Http\Controllers\AdminController::class, 'destroyPost'])->name('deletePost');
     Route::delete('/admin/user/{user}', [\App\Http\Controllers\AdminController::class, 'destroyUser'])->name('deleteUser');
-
 });
 
 Route::get('/concept', function (Request $request) { return Inertia::render('Concept');})->name('concept');

@@ -12,7 +12,7 @@ class CategorySeeder extends Seeder
      */
     public function run()
     {
-        $categories = ['News', 'Ouah', 'Positif'];
+        $categories = ['News', 'Ouah', 'Positif', 'Politique', 'Santé', 'Sport', 'Sciences', 'Monde', 'Environnement', 'Economie', 'Bien-être', 'Positif', 'Numérique', 'Culture', 'Société', 'Animaux', 'Technologie'];
 
         foreach ($categories as  $category) {
             \App\Models\category::create(['name' => $category]);

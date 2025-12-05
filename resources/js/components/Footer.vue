@@ -1,8 +1,11 @@
 <script setup lang="ts">
-
-
+import { login, logout } from '@/routes';
 import { edit } from '@/routes/profile';
 import { Link } from '@inertiajs/vue3';
+import { usePage } from '@inertiajs/vue3';
+
+const page = usePage();
+const user = usePage().props.auth?.user;
 </script>
 
 <template>
@@ -29,8 +32,13 @@ import { Link } from '@inertiajs/vue3';
                 </div>
 
                 <div class="nav-demi">
-                    <a href="">Connexion</a>
-                    <Link :href="edit()">
+                    <Link class="button-link" v-if="user" :href="logout()">
+                        Déconnexion
+                    </Link>
+                    <Link v-if="!user" :href="login()">
+                        Connexion
+                    </Link>
+                    <Link v-if="user" :href="edit()">
                         Paramètres
                     </Link>
                     <Link href="/mentions-legales">
@@ -56,6 +64,15 @@ import { Link } from '@inertiajs/vue3';
 </template>
 
 <style scoped lang="scss">
+
+.button-link {
+    display: flex;
+    justify-content: left;
+
+    @media (min-width: 768px) {
+        justify-content: right;
+    }
+}
 
     footer{
         display: flex;

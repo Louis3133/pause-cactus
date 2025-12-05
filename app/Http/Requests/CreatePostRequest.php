@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
 
 class CreatePostRequest extends FormRequest
 {
@@ -17,28 +18,44 @@ class CreatePostRequest extends FormRequest
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
-        return [
+        $rules = [
             'title' => ['required', 'string', 'min:8'],
-            'slug' => ['required' , 'min:8', 'regex:/^[0-9a-z\-]+$/', Rule::unique('posts')->ignore($this->route('post'))],
-            'description' => ['required'],
+            'slug' => [
+                'required',
+                'min:8',
+                'regex:/^[0-9a-z\-]+$/',
+                Rule::unique('posts')->ignore($this->route('post'))
+            ],
+            'description' => ['required', 'string'],
             'licence_id' => ['required', 'exists:licences,id'],
-            'image' => ['nullable', 'image'],
             'tags' => ['nullable', 'array'],
             'tags.*' => ['exists:tags,id'],
             'categories' => ['nullable', 'array'],
             'categories.*' => ['exists:categories,id'],
-            'webtoon' => ['nullable', 'image'],
+            'serie_id' => ['nullable', 'exists:series,id'],
         ];
+
+        if ($this->isMethod('post')) {
+            $rules['image'] = ['required', 'image', 'max:5120'];
+            $rules['webtoon'] = ['required', 'image', 'max:10240'];
+        } else {
+
+            $rules['image'] = ['nullable', 'image', 'max:5120'];
+            $rules['webtoon'] = ['nullable', 'image', 'max:10240'];
+        }
+
+        return $rules;
     }
 
-    protected function prepareForValidation(){
+    protected function prepareForValidation()
+    {
         $this->merge([
-            'slug' => $this->input('slug') ?: \Str::slug($this->input('title')),
+            'slug' => $this->input('slug')
+                ? Str::slug($this->input('slug'))
+                : Str::slug($this->input('title')),
         ]);
     }
 }

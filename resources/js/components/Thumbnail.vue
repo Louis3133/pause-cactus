@@ -110,8 +110,8 @@ const slugify = (text: string) => {
 .thumbnail {
     position: relative;
     display: flex;
-    width: #{fluid(140px, 250px, 320px, 998px)};
-    height: #{fluid(192px, 345px, 320px, 998px)};
+    width: #{fluid(120px, 250px, 320px, 998px)};
+    height: #{fluid(172px, 345px, 320px, 998px)};
     flex-direction: column;
     justify-content: flex-end;
     align-items: center;

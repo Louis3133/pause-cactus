@@ -54,6 +54,8 @@ class PostController extends Controller
             'selectedTags' => $post->tags->pluck('id'),
             'categories' => category::select('id', 'name')->get(),
             'selectedCategories' => $post->categories->pluck('id'),
+            'imageUrl' => $post->imageUrl(),
+            'webtoonUrl' => $post->webtoon ? \Illuminate\Support\Facades\Storage::url($post->webtoon) : null,
         ]);
     }
 
@@ -83,20 +85,32 @@ class PostController extends Controller
     private function extractData(Post $post, CreatePostRequest $request){
         $data = $request->validated();
 
-        $image = $request->validated('image');
-        if($image && !$image->getError()){
+        // --- GESTION IMAGE ---
+        $image = $request->file('image'); // On récupère le fichier
+
+        if($image){
+            // Si un nouveau fichier est là, on supprime l'ancien et on upload le nouveau
             if ($post->image) {
                 Storage::disk('public')->delete($post->image);
             }
             $data['image'] = $image->store('posts', 'public');
+        } else {
+            // IMPORTANT : Si pas de nouvelle image, on retire la clé du tableau
+            // pour éviter d'écraser la valeur en BDD avec "null"
+            unset($data['image']);
         }
 
-        $webtoon = $request->validated('webtoon');
-        if($webtoon && !$webtoon->getError()){
+        // --- GESTION WEBTOON ---
+        $webtoon = $request->file('webtoon');
+
+        if($webtoon){
             if ($post->webtoon) {
                 Storage::disk('public')->delete($post->webtoon);
             }
             $data['webtoon'] = $webtoon->store('webtoons', 'public');
+        } else {
+            // Idem pour le webtoon, on retire la clé si pas de nouveau fichier
+            unset($data['webtoon']);
         }
 
         return $data;
