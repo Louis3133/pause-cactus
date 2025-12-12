@@ -56,7 +56,7 @@ Route::prefix('/posts')->name('posts.')->middleware(['auth', ValidateSessionWith
     Route::put('/{post}', 'update')->name('update');
     Route::delete('/{post}', 'destroy')->name('destroy');
     Route::put('/{post}/favorite', 'favorite')->name('favorite');
-    Route::get('/{slug}-{id}/webtoon', 'webtoon')->name('webtoon');
+    Route::get('/{slug}-{id}/webtoon', 'webtoon')->where(['id' => '[0-9]+', 'slug' => '[a-z0-9\-]+'])->name('webtoon');
 });
 
 Route::prefix('/author')->name('author.')->controller(\App\Http\Controllers\UserController::class)->group(function () {

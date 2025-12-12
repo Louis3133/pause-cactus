@@ -18,10 +18,16 @@ defineOptions({ layout: AppLayout })
 
 
 <template>
-        <h1>{{ post.title }}</h1>
-        <img :src="webtoonUrl" :alt="post.title">
+        <img class="webtoon" :src="webtoonUrl" :alt="post.title">
 </template>
 
 <style scoped lang="scss">
+@use '../../scss/fluid.scss' as *;
+
+.webtoon {
+    max-width: 900px;
+    margin-inline: auto;
+    width: #{fluid(300px, 950px, 320px, 1200px)};
+}
 
 </style>

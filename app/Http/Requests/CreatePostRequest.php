@@ -26,7 +26,7 @@ class CreatePostRequest extends FormRequest
             'slug' => [
                 'required',
                 'min:8',
-                'regex:/^[0-9a-z\-]+$/',
+                'regex:/^[a-z0-9\-]+$/',
                 Rule::unique('posts')->ignore($this->route('post'))
             ],
             'description' => ['required', 'string'],
@@ -51,11 +51,11 @@ class CreatePostRequest extends FormRequest
     }
 
     protected function prepareForValidation()
-    {
-        $this->merge([
-            'slug' => $this->input('slug')
-                ? Str::slug($this->input('slug'))
-                : Str::slug($this->input('title')),
-        ]);
-    }
+{
+    $slugToClean = $this->input('slug') ?: $this->input('title');
+
+    $this->merge([
+        'slug' => \Illuminate\Support\Str::slug($slugToClean),
+    ]);
+}
 }
